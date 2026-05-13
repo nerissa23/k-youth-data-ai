@@ -1,10 +1,6 @@
 import sys
-from src import ingestor
+from src import ingestor, processor
 from pathlib import Path
-
-ROOT_DIR = Path(__file__).parent
-DATA_DIR = ROOT_DIR/"data"
-SRC_DIR = ROOT_DIR/"src"
 
 def main():
     if len(sys.argv) > 1:
@@ -16,8 +12,9 @@ def main():
                     ingestor.ingest()
                     # func()
                 case "process":
-                    print("")
+                    print("🥈 Silver:...")
                     # call processor.py
+                    processor.process()
                 case "load":
                     print("")
                     # call loader.py

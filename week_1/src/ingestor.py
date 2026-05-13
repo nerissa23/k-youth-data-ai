@@ -2,7 +2,7 @@ import email
 from pathlib import Path
 import quopri
 import os
-from main import DATA_DIR
+from paths import DATA_DIR
 
 def ingest_all_mhtml(input_dir, output_dir):
     # handle when input_dir is not found/available
