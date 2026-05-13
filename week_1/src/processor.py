@@ -68,7 +68,7 @@ def process_all_html(input_dir, output_dir):
         print(f"❗ Error processing HTML: {e}")
 
 def print_summary(total, succeed, fail):
-    print(f"\n📊 Silver Summary:\nTotal: {total} | Extracted: {succeed} | Failed: {fail}")
+    print(f"\n📊 Silver Summary:\nTotal: {total} | Processed: {succeed} | Skipped: {fail}")
 
 def process():
     input = DATA_DIR/"1_bronze/"
