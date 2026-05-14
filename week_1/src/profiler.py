@@ -1,17 +1,16 @@
 from pathlib import Path
-from paths import DATA_DIR
 import os
 import sqlite3
 
 def run_data_profile(db_path):
-    db_file = Path(db_path)/"jobs.db"
+    print("\n--- 🔍 DATA QUALITY REPORT ---")
 
     # check if db_path exist, if not return safely
-    if not os.path.isfile(db_file):
+    if not os.path.isfile(db_path):
         print(f"❌ Database not found at {db_path}")
         return
 
-    conn = sqlite3.connect(db_file)
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
@@ -67,8 +66,3 @@ def run_data_profile(db_path):
     print(f"   ↳ {' | '.join(rec[0:-1])}")
 
     conn.close()
-
-def profile():
-    print("\n--- 🔍 DATA QUALITY REPORT ---")
-    db_path = DATA_DIR/"3_gold"
-    run_data_profile(db_path)

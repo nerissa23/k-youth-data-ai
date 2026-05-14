@@ -1,10 +1,11 @@
 from pathlib import Path
-from paths import DATA_DIR
 import sqlite3
 import os
 import json
 
 def load_all_jsons(input_dir, output_dir):
+    print("\n🥇 Gold:...")
+
     if not os.path.isdir(input_dir):
         print(f"❗ Input directory not found")
         return
@@ -72,9 +73,3 @@ def create_table_schema(cursor):
 
 def print_summary(total, success, fail):
     print(f"\n📊 Gold Summary:\nTotal: {total} | Inserted: {success} | Skipped: {fail}")
-
-def load():
-    print("\n🥇 Gold:...")
-    input = DATA_DIR/"2_silver"
-    output = DATA_DIR/"3_gold"
-    load_all_jsons(input, output)

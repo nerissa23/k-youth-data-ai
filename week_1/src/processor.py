@@ -2,7 +2,6 @@ from pydantic import BaseModel
 import os
 from pathlib import Path
 from bs4 import BeautifulSoup
-from paths import DATA_DIR
 
 # basic pydantic model for JobListing item
 class JobListing(BaseModel):
@@ -12,6 +11,8 @@ class JobListing(BaseModel):
     description: str
 
 def process_all_html(input_dir, output_dir):
+    print("\n🥈 Silver:...")
+
     # handling when input_dir is not avail
     if not os.path.isdir(input_dir):
         print(f"❗ Input directory not found")
@@ -69,9 +70,3 @@ def process_all_html(input_dir, output_dir):
 
 def print_summary(total, succeed, fail):
     print(f"\n📊 Silver Summary:\nTotal: {total} | Processed: {succeed} | Skipped: {fail}")
-
-def process():
-    print("\n🥈 Silver:...")
-    input = DATA_DIR/"1_bronze/"
-    output = DATA_DIR/"2_silver/"
-    process_all_html(input, output)

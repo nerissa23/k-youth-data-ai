@@ -2,9 +2,10 @@ import email
 from pathlib import Path
 import quopri
 import os
-from paths import DATA_DIR
 
 def ingest_all_mhtml(input_dir, output_dir):
+    print("\n🥉 Bronze:...")
+
     # handle when input_dir is not found/available
     if not os.path.isdir(input_dir):
         print(f"❗ Input directory not found")
@@ -59,9 +60,3 @@ def ingest_all_mhtml(input_dir, output_dir):
 
 def print_summary(total, succeed, fail):
     print(f"\n📊 Bronze summary:\nTotal: {total} | Extracted: {succeed} | Failed: {fail}")
-
-def ingest():
-    print("\n🥉 Bronze:...")
-    input = DATA_DIR/"0_source/"
-    output = DATA_DIR/"1_bronze/"
-    ingest_all_mhtml(input, output)
