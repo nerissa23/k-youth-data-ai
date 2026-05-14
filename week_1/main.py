@@ -1,5 +1,5 @@
 import sys
-from src import ingestor, processor
+from src import ingestor, processor, loader
 from pathlib import Path
 
 def main():
@@ -16,8 +16,9 @@ def main():
                     # call processor.py
                     processor.process()
                 case "load":
-                    print("")
+                    print("🥇 Gold:...")
                     # call loader.py
+                    loader.load()
                 case "profile":
                     print("")
                     # call profiler
