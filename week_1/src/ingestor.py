@@ -61,6 +61,7 @@ def print_summary(total, succeed, fail):
     print(f"\n📊 Bronze summary:\nTotal: {total} | Extracted: {succeed} | Failed: {fail}")
 
 def ingest():
+    print("\n🥉 Bronze:...")
     input = DATA_DIR/"0_source/"
     output = DATA_DIR/"1_bronze/"
     ingest_all_mhtml(input, output)

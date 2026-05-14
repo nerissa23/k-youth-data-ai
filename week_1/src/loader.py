@@ -44,7 +44,7 @@ def load_all_jsons(input_dir, output_dir):
                     insert_count += 1
                     print(f"✅ Inserted: {file}")
                 else:
-                    print(f"⏭️ Skipped (duplicate): {file}")
+                    print(f"⏭️  Skipped (duplicate): {file}")
                     
                 conn.commit()
 
@@ -74,6 +74,7 @@ def print_summary(total, success, fail):
     print(f"\n📊 Gold Summary:\nTotal: {total} | Inserted: {success} | Skipped: {fail}")
 
 def load():
+    print("\n🥇 Gold:...")
     input = DATA_DIR/"2_silver"
     output = DATA_DIR/"3_gold"
     load_all_jsons(input, output)

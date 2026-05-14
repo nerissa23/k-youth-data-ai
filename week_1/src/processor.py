@@ -42,7 +42,7 @@ def process_all_html(input_dir, output_dir):
             company_el = soup.find(attrs={"data-automation": "advertiser-name"})
             company = company_el.get_text(strip=True) if company_el else ""
             description_el = soup.find(attrs={"data-automation": "jobAdDetails"})
-            description = description_el.get_text("\n") if description_el else ""
+            description = description_el.get_text("\n", strip=True) if description_el else ""
 
             data = JobListing(
                 source_id=source_id,
@@ -71,6 +71,7 @@ def print_summary(total, succeed, fail):
     print(f"\n📊 Silver Summary:\nTotal: {total} | Processed: {succeed} | Skipped: {fail}")
 
 def process():
+    print("\n🥈 Silver:...")
     input = DATA_DIR/"1_bronze/"
     output = DATA_DIR/"2_silver/"
     process_all_html(input, output)

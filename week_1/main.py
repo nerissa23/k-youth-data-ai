@@ -1,5 +1,5 @@
 import sys
-from src import ingestor, processor, loader
+from src import ingestor, processor, loader, profiler
 from pathlib import Path
 
 def main():
@@ -7,24 +7,22 @@ def main():
         for arg in sys.argv[1:]:
             match arg:
                 case "ingest":
-                    print("🥉 Bronze:...")
-                    # call ingestor.py
                     ingestor.ingest()
-                    # func()
                 case "process":
-                    print("🥈 Silver:...")
-                    # call processor.py
                     processor.process()
                 case "load":
-                    print("🥇 Gold:...")
-                    # call loader.py
                     loader.load()
                 case "profile":
-                    print("")
-                    # call profiler
+                    profiler.profile()
+                case "all":
+                    ingestor.ingest()
+                    processor.process()
+                    loader.load()
+                    profiler.profile()
                 case _:
-                    print("❗ Argument passed is not available")
-
+                    print("Usage: python main.py [ingest|process|load|profile|all]")
+    else:
+        print("Usage: python main.py [ingest|process|load|profile|all]")
 
 if __name__ == "__main__":
     main()
