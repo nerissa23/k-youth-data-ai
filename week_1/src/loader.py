@@ -24,7 +24,7 @@ def load_all_jsons(input_dir, output_dir):
 
         for file in files:
             json_path = os.path.join(input_dir, file)
-            db_path = Path(output_dir)/"jobs.db"
+            db_path = Path(output_dir)/"jobs.db" # boleh letak luar loop
             json_str = Path(json_path).read_text(encoding="utf-8")
             data = json.loads(json_str)
             job_title = data["job_title"]
@@ -37,6 +37,8 @@ def load_all_jsons(input_dir, output_dir):
 
             # connect() accepts db file path as arg
             with sqlite3.connect(db_path) as conn:
+                conn.row_factory = sqlite3.Rowx
+
                 # cursor: exec CRUD ops, queries, fetches
                 cursor = conn.cursor()
                 # create_table_schema(cursor, True, "content_hash", "TEXT")
@@ -45,6 +47,7 @@ def load_all_jsons(input_dir, output_dir):
                 # BONUS: solve INSERT OR IGNORE problem
                 cursor.execute("SELECT content_hash FROM jobs WHERE source_id = ?", (source_id,))
                 existing = cursor.fetchone()
+                # (a,b) -> tuple -> existing["source_id"]
 
                 if existing is None:
                     # new record, can insert
@@ -56,10 +59,10 @@ def load_all_jsons(input_dir, output_dir):
                     # record exists but content changed, need to update
                     cursor.execute(
                         """
-                        UPDATE jobs SET job_title=?, company=?, description=?
+                        UPDATE jobs SET job_title=?, company=?, description=? content_hash=?
                         WHERE source_id=?
                         """,
-                        (job_title, company, desc, source_id)
+                        (job_title, company, desc, content_hash, source_id)
                     )
                     logging.info(f"🔄 Updated: {file}")
                 else:
@@ -71,6 +74,7 @@ def load_all_jsons(input_dir, output_dir):
         print_summary(len(files), insert_count, len(files)-insert_count)
     except sqlite3.Error as e:
         logging.error(f"❗ SQLIte Error: {e}")
+        raise(e)
     except Exception as e:
         logging.error(f"❗ Error loading JSON to DB: {e}")
 
