@@ -37,7 +37,7 @@ def load_all_jsons(input_dir, output_dir):
 
             # connect() accepts db file path as arg
             with sqlite3.connect(db_path) as conn:
-                conn.row_factory = sqlite3.Rowx
+                conn.row_factory = sqlite3.Row
 
                 # cursor: exec CRUD ops, queries, fetches
                 cursor = conn.cursor()
