@@ -1,4 +1,5 @@
 import sys
+import logging
 from pathlib import Path
 from src.ingestor import ingest_all_mhtml
 from src.processor import process_all_html
@@ -31,6 +32,10 @@ def run_bronze():
     ingest_all_mhtml(input_dir, output_dir)
 
 def main():
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s |%(levelname)s |%(message)s"
+    )
     if len(sys.argv) > 1:
         for arg in sys.argv[1:]:
             match arg:

@@ -2,13 +2,14 @@ import email
 from pathlib import Path
 import quopri
 import os
+import logging
 
 def ingest_all_mhtml(input_dir, output_dir):
     print("\n🥉 Bronze:...")
 
     # handle when input_dir is not found/available
     if not os.path.isdir(input_dir):
-        print(f"❗ Input directory not found")
+        logging.error(f"❗ Input directory not found")
         return
     
     # create output_dir if does not exist
@@ -20,7 +21,7 @@ def ingest_all_mhtml(input_dir, output_dir):
         extract_count = 0
         # handle when input_dir has no contents inside
         if len(files) == 0:
-            print(f"❗ Input directory is empty")
+            logging.error(f"❗ Input directory is empty")
             return
 
         for file in files:
@@ -50,13 +51,13 @@ def ingest_all_mhtml(input_dir, output_dir):
 
             if contains_html:
                 extract_count += 1
-                print(f"✅ Extracted: {file}")
+                logging.info(f"✅ Extracted: {file}")
             else:
-                print(f"⚠️ No HTML content found in: {file}")
+                logging.warning(f"⚠️ No HTML content found in: {file}")
             
         print_summary(len(files), extract_count, len(files)-extract_count)
     except Exception as e:
-        print(f"❗ Error extracting HTML: {e}")
+        logging.error(f"❗ Error extracting HTML: {e}")
 
 def print_summary(total, succeed, fail):
     print(f"\n📊 Bronze summary:\nTotal: {total} | Extracted: {succeed} | Failed: {fail}")

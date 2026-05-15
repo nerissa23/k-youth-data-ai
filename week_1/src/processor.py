@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 import os
+import logging
 from pathlib import Path
 from bs4 import BeautifulSoup
 
@@ -15,7 +16,7 @@ def process_all_html(input_dir, output_dir):
 
     # handling when input_dir is not avail
     if not os.path.isdir(input_dir):
-        print(f"❗ Input directory not found")
+        logging.error(f"❗ Input directory not found")
         return
     
     # auto create output_dir if doesnt currently exist
@@ -26,7 +27,7 @@ def process_all_html(input_dir, output_dir):
         files = os.listdir(input_dir)
         process_count = 0
         if len(files) == 0:
-            print(f"❗ Input directory is empty")
+            logging.error(f"❗ Input directory is empty")
             return
         
         for file in files:
@@ -59,14 +60,14 @@ def process_all_html(input_dir, output_dir):
                     f.write(data.model_dump_json(indent=2))
                 
                 process_count += 1
-                print(f"✅ Processed: {file}")
+                logging.info(f"✅ Processed: {file}")
             else:
                 missing = [name for name, val in data.model_dump().items() if not val]
-                print(f"⚠️  Missing {', '.join(missing)} in: {file}")
+                logging.warning(f"⚠️  Missing {', '.join(missing)} in: {file}")
 
         print_summary(len(files), process_count, len(files)-process_count)
     except Exception as e:
-        print(f"❗ Error processing HTML: {e}")
+        logging.error(f"❗ Error processing HTML: {e}")
 
 def print_summary(total, succeed, fail):
     print(f"\n📊 Silver Summary:\nTotal: {total} | Processed: {succeed} | Skipped: {fail}")

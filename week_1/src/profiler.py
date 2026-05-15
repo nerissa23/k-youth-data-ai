@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+import logging
 import sqlite3
 
 def run_data_profile(db_path):
@@ -7,7 +8,7 @@ def run_data_profile(db_path):
 
     # check if db_path exist, if not return safely
     if not os.path.isfile(db_path):
-        print(f"❌ Database not found at {db_path}")
+        logging.error(f"❌ Database not found at {db_path}")
         return
 
     conn = sqlite3.connect(db_path)
@@ -17,7 +18,7 @@ def run_data_profile(db_path):
     # total records
     cursor.execute("SELECT COUNT(*) FROM jobs")
     total_recs = cursor.fetchone()[0]
-    print(f"📈 Total Records: {total_recs}")
+    logging.info(f"📈 Total Records: {total_recs}")
 
     # null values in job_title, company, desc
     cursor.execute(
@@ -32,7 +33,7 @@ def run_data_profile(db_path):
     res = cursor.fetchone()
     nulls = dict(res)
     missing = [f"{col}: {count}" for col, count in nulls.items()]
-    print(f"❓ Missing values -> {', '.join(missing)}")
+    logging.warning(f"❓ Missing values -> {', '.join(missing)}")
 
     # avg desc length
     cursor.execute(
@@ -41,7 +42,7 @@ def run_data_profile(db_path):
         """
     )
     res = cursor.fetchone()[0]
-    print(f"📝 Avg Description Length: {res:.0f} chars")
+    logging.info(f"📝 Avg Description Length: {res:.0f} chars")
 
     # shortest desc length & source_id, job_title
     cursor.execute(
@@ -50,9 +51,9 @@ def run_data_profile(db_path):
         """
     )
     shortest = dict(cursor.fetchone())
-    print(f"⚠️  Shortest Description: {shortest["length"]} chars")
+    logging.info(f"⚠️  Shortest Description: {shortest["length"]} chars")
     rec = [f"{source_id}: {job_title}" for source_id, job_title in shortest.items()]
-    print(f"   ↳ {' | '.join(rec[0:-1])}")
+    logging.info(f"   ↳ {' | '.join(rec[0:-1])}")
 
     # longest desc length & source_id, job_title
     cursor.execute(
@@ -61,8 +62,8 @@ def run_data_profile(db_path):
         """
     )
     longest = dict(cursor.fetchone())
-    print(f"⚠️  Longest Description: {longest["length"]} chars")
+    logging.info(f"⚠️  Longest Description: {longest["length"]} chars")
     rec = [f"{source_id}: {job_title}" for source_id, job_title in longest.items()]
-    print(f"   ↳ {' | '.join(rec[0:-1])}")
+    logging.info(f"   ↳ {' | '.join(rec[0:-1])}")
 
     conn.close()
