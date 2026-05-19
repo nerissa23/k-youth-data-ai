@@ -1,0 +1,7 @@
+data/
+*/__pycache__/
+.ruff_cache/
+.venv/
+__pycache__
+
+.env
