@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 API_KEY = os.getenv("GOOGLE_API_KEY")
 
-OLLAMA_MODELS = ["deepseek-r1:1.5b", "phi3", "llama3.1"]
+OLLAMA_MODELS = ["deepseek-r1:1.5b", "phi3", "llama3.1", "gemma3:1b"]
 GOOGLE_MODELS = [
     "gemini-2.5-flash",
     "gemini-2.5-flash-lite",
