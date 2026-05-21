@@ -46,10 +46,31 @@ def normalise_skills(raw: str) -> set:
             for part in item.split("/"):
                 part = part.strip()
                 if part:
-                    skills.add(part)
+                    skills.add(apply_aliases(part))
 
     return skills
 
+def jailbreak_safety(text: str) -> bool:
+    """Basic jailbreak/injection detection using regex on user input
+    
+    Checks for prompt injection patterns, SQL keywords, script tags
+    """
+
+    patterns = [
+        r"ignore\s+(previous|all|above)\s+instructions",
+        r"you\s+are\s+now\s+a",
+        r"forget\s+(your\s+)?(previous\s+)?instructions",
+        r"<\s*script.*?>",
+        r"(drop|delete|insert|update|select)\s+.*(table|from|into|where)",
+        r"system\s*prompt",
+        r"jailbreak",
+        r"do\s+anything\s+now",
+    ]
+    text_lower = text.lower()
+    for pattern in patterns:
+        if re.search(pattern, text_lower):
+            return True
+    return False
 
 def extract_resume_skills(resume_text: str) -> set | None:
     """Use google LLM to extract tech skills from resume.
@@ -172,6 +193,11 @@ def find_skill_gaps(input_file_path: str, db_url: str) -> SkillGapResult:
         # handle when resume file is empty
         if not resume_text:
             print("[Error] Resume file is empty.")
+            return SkillGapResult(gaps=[])
+        
+        # jailbreak check
+        if jailbreak_safety(resume_text):
+            print("[Warning] Suspicious content detected in resume. Aborting.")
             return SkillGapResult(gaps=[])
 
         # extract skills from resume using llm
