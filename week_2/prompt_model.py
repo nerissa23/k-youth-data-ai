@@ -1,9 +1,10 @@
 import os
 import sys
 from google import genai
-from google.genai import errors
+from google.genai import errors, types
 from ollama import generate
 from dotenv import load_dotenv
+from dataclasses import dataclass
 
 # getting google api key from .env file
 load_dotenv()
@@ -17,17 +18,29 @@ GOOGLE_MODELS = [
 ]
 
 
-def ollama_prompt(model: str, prompt: str) -> str:
+@dataclass
+class ModelConfig:
+    temperature: float = 0.7
+    seed: int | None = None
+
+
+def ollama_prompt(model: str, prompt: str, config: ModelConfig | None = None) -> str:
     """Use `ollama.generate()` to run one-shot prompts with ollama model"""
 
     try:
-        res = generate(model=model, prompt=prompt)
+        options = {}
+        if config:
+            options["temperature"] = config.temperature
+            if config.seed is not None:
+                options["seed"] = config.seed
+        
+        res = generate(model=model, prompt=prompt, options=options if options else None)
         return res.response
     except Exception as e:
         return f"[Ollama Error] {e}"
 
 
-def gemini_prompt(model: str, prompt: str, config=None) -> str:
+def gemini_prompt(model: str, prompt: str, config: ModelConfig | None = None) -> str:
     """Run gemini model specified to generate content"""
 
     if not API_KEY:
@@ -35,10 +48,18 @@ def gemini_prompt(model: str, prompt: str, config=None) -> str:
 
     try:
         client = genai.Client(api_key=API_KEY)
+
+        gemini_config = None
+        if config:
+            gemini_config = types.GenerateContentConfig(
+                temperature=config.temperature,
+                **({"seed": config.seed} if config.seed is not None else {})
+            )
+
         res = client.models.generate_content(
             model=model, 
             contents=prompt,
-            **({"config": config} if config else {})
+            **({"config": gemini_config} if gemini_config else {})
         )
         return res.text
     except errors.APIError as e:
@@ -47,7 +68,7 @@ def gemini_prompt(model: str, prompt: str, config=None) -> str:
         return f"[Error] {type(e).__name__}: {e}"
 
 
-def prompt_model(model: str, prompt: str, config=None) -> str:
+def prompt_model(model: str, prompt: str, config: ModelConfig | None = None) -> str:
     """Use model selected to generate content from text prompt;
     Returns text response"""
 
@@ -63,7 +84,7 @@ def prompt_model(model: str, prompt: str, config=None) -> str:
 
     # if model --> ollama models:
     if any(elem in model for elem in OLLAMA_MODELS):
-        return ollama_prompt(model, prompt)
+        return ollama_prompt(model, prompt, config)
     # if model --> google/gemini models:
     elif any(elem in model for elem in GOOGLE_MODELS):
         return gemini_prompt(model, prompt, config)

@@ -6,9 +6,8 @@ import os
 import sqlite3
 from pydantic import BaseModel
 from typing import List
-from google.genai import types
 from dotenv import load_dotenv
-from prompt_model import prompt_model
+from prompt_model import prompt_model, ModelConfig
 from aliases import ALIASES
 
 load_dotenv()
@@ -79,7 +78,7 @@ def extract_resume_skills(resume_text: str) -> set | None:
         IMPORTANT: Return ONLY the JSON array. Nothing else.
     """
 
-    config = types.GenerateContentConfig(temperature=TEMPERATURE, seed=SEED)
+    config = ModelConfig(temperature=TEMPERATURE, seed=SEED)
 
     for attempt in range(1, MAX_ATTEMPTS + 1):
         try:
