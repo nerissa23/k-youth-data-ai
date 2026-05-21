@@ -18,7 +18,7 @@ def chunks(data: dict, SIZE: int = 10):
     for i in range(0, len(data), SIZE):
         yield {k:data[k] for k in islice(it, SIZE)}
 
-def send_prompt(model: str, batch_desc: list) -> list | None:
+def extract_stack(model: str, batch_desc: list) -> list | None:
     """Sends one prompt to model for the entire batch
 
     Returns: parsed list of tech stacks OR None on failure
@@ -55,7 +55,7 @@ def send_prompt(model: str, batch_desc: list) -> list | None:
         # extract JSON array from raw string using regex
         match = re.search(r'\[.*\]', raw, re.DOTALL)
         if not match:
-            # model did not return a list, fail
+            # model did not return a json array, fail
             return None
         return json.loads(match.group())
     except (json.JSONDecodeError, ValueError):
@@ -90,7 +90,7 @@ def process_in_batch(conn, cursor, res):
 
         for attempt in range(1, MAX_ATTEMPT + 1):
             try:
-                tech_stack = send_prompt(MODEL, batch_desc)
+                tech_stack = extract_stack(MODEL, batch_desc)
 
                 # validate tech_stack response from model
                 if tech_stack is None or len(tech_stack) != len(batch_desc):
