@@ -25,6 +25,8 @@ def gemini_prompt(model: str, prompt: str) -> str:
     """Run gemini model specified to generate content"""
 
     try:
+        if not API_KEY:
+            return f"[Gemini Error] No API key found"
         client = genai.Client(api_key=API_KEY)
         res = client.models.generate_content(
             model=model,
