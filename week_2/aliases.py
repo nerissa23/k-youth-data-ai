@@ -21,5 +21,19 @@ ALIASES = {
     "powerbi": "power bi",
     "power bi": "power bi",
     "k8s": "kubernetes",
-    "docker-compose": "docker"
+    "docker-compose": "docker",
+    "dockerfile": "docker",
+
+    "ci/cd": "ci/cd",
+    "ci": "ci/cd",
+    "cd": "ci/cd",
+    "a/b testing": "a/b testing",
+    "a testing": "a/b testing",
+    "b testing": "a/b testing",
+
+    "github": "github actions",
+
+    "spring": "spring framework",
+    "springboot": "spring boot",
+    "spring boot": "spring boot",
 }
