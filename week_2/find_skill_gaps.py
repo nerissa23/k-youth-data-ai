@@ -7,15 +7,18 @@ import sqlite3
 from pydantic import BaseModel
 from typing import List
 from dotenv import load_dotenv
+from pathlib import Path
+from pypdf import PdfReader
+from docx import Document
 from prompt_model import prompt_model, ModelConfig
 from aliases import ALIASES
 
 load_dotenv()
 API_KEY = os.getenv("GOOGLE_API_KEY")
 
-BATCH_SIZE = 4
-MAX_ATTEMPTS = 3
+BATCH_SIZE = 4 # job_d1.db --> 4; jobs.db --> 20; jobs_d3_eval.db --> 4
 RETRY_DUR = 3
+MAX_ATTEMPTS = 3
 
 MODEL = "gemini-2.5-flash-lite"
 TEMPERATURE = 0
@@ -24,6 +27,33 @@ SEED = 42
 
 class SkillGapResult(BaseModel):
     gaps: List[str]
+
+
+def read_resume(input_file_path: str) -> str | None:
+    """Read resume file content, supports .txt, .pdf, .docx formats"""
+
+    ext  = Path(input_file_path).suffix.lower()
+
+    try:
+        if ext == ".txt":
+            with open(input_file_path, "r", encoding="utf-8") as f:
+                return f.read().strip()
+        elif ext == ".pdf":
+            reader = PdfReader(input_file_path)
+            text = ""
+            for page in reader.pages:
+                text += page.extract_text() or ""
+            return text.strip()
+        elif ext == ".docx":
+            doc = Document(input_file_path)
+            text = "\n".join(para.text for para in doc.paragraphs)
+            return text.strip()
+        else:
+            print(f"[Error] Unsupported file format '{ext}'.")
+            return None
+    except Exception as e:
+        print(f"[Error] Failed to read resume: {type(e).__name__}: {e}")
+        return None
 
 
 def apply_aliases(skill: str) -> str:
@@ -97,6 +127,7 @@ def extract_resume_skills(resume_text: str) -> set | None:
         {resume_text}
 
         IMPORTANT: Return ONLY the JSON array. Nothing else.
+        If the resume does not have any technical skills listed, return an empty array [].
     """
 
     config = ModelConfig(temperature=TEMPERATURE, seed=SEED)
@@ -187,12 +218,11 @@ def find_skill_gaps(input_file_path: str, db_url: str) -> SkillGapResult:
 
     try:
         # read resume file and parse to string
-        with open(input_file_path, "r", encoding=" utf-8") as f:
-            resume_text = f.read().strip()
+        resume_text = read_resume(input_file_path)
 
         # handle when resume file is empty
         if not resume_text:
-            print("[Error] Resume file is empty.")
+            print("[Error] Resume file is empty or could not be read.")
             return SkillGapResult(gaps=[])
         
         # jailbreak check
