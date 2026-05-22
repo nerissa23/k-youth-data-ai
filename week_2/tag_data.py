@@ -7,9 +7,10 @@ import re
 from itertools import islice
 from prompt_model import prompt_model
 
-BATCH_SIZE = 2
+BATCH_SIZE = 20 # job_d1.db --> 4; jobs.db --> 20; jobs_d3_eval.db --> 4
 RETRY_DUR = 3
 MAX_ATTEMPT = 3
+
 MODEL = "gemini-2.5-flash-lite"
 
 
@@ -41,7 +42,7 @@ def extract_tech_stack(batch_desc: list) -> list | None:
         {chr(10).join(f"{i + 1}. {desc}" for i, desc in enumerate(batch_desc))}
 
         IMPORTANT: Return exactly {len(batch_desc)} elements in the array, one per job.
-        If a job has no technologies mentioned, use return empty string "".
+        If a job has no technologies mentioned, return empty string "".
     """
 
     raw = prompt_model(MODEL, prompt)
