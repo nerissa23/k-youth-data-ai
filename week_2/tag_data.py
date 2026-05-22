@@ -13,6 +13,9 @@ MAX_ATTEMPT = 3
 
 MODEL = "gemini-2.5-flash-lite"
 
+class RateLimitError(Exception):
+    pass
+
 
 def chunks(data: dict, SIZE: int = 10):
     """Create sub-dictionaries from `data` by slicing into `SIZE` slices"""
@@ -48,6 +51,8 @@ def extract_tech_stack(batch_desc: list) -> list | None:
     raw = prompt_model(MODEL, prompt)
 
     # if raw contains RateLimitError, raise
+    if "429" in raw:
+        raise RateLimitError(raw)
 
     # detect error strings returned by prompt_model()
     if (
@@ -112,6 +117,10 @@ def process_in_batch(conn, cursor, res):
                     result and print(result)
                 conn.commit()
                 break
+            except RateLimitError:
+                print(f"[Batch {index}] Attempt {attempt} failed: Rate limit hit, retrying in {RETRY_DUR}s...")
+                time.sleep(RETRY_DUR)
+                continue
             except Exception as e:
                 print(
                     f"[Batch {index}] Attempt {attempt} failed: {type(e).__name__}: {e}"
