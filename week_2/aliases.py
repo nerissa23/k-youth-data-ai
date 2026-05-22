@@ -8,7 +8,7 @@ ALIASES = {
 
     "postgres": "postgresql",
     "mongo": "mongodb",
-    "mysql": "sql",
+    "mysql": "mysql",
 
     "gcp": "google cloud",
     "amazon web services": "aws",
@@ -34,6 +34,7 @@ ALIASES = {
     "github": "github actions",
 
     "spring": "spring framework",
+    "spring framework": "spring framework",
     "springboot": "spring boot",
     "spring boot": "spring boot",
 }
