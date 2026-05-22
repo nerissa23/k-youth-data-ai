@@ -63,6 +63,8 @@ def gemini_prompt(model: str, prompt: str, config: ModelConfig | None = None) ->
         )
         return res.text
     except errors.APIError as e:
+        if e.code == 429:
+            return f"[Gemini Error] RateLimitError: {e}"
         return f"[Gemini Error] {e.code} {e.status}. {e}"
     except Exception as e:
         return f"[Error] {type(e).__name__}: {e}"

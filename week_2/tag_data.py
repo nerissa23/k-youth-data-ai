@@ -7,8 +7,8 @@ import re
 from itertools import islice
 from prompt_model import prompt_model
 
-BATCH_SIZE = 20 # job_d1.db --> 4; jobs.db --> 20; jobs_d3_eval.db --> 4
-RETRY_DUR = 3
+BATCH_SIZE = 4 # job_d1.db --> 4; jobs.db --> 25; jobs_d3_eval.db --> 4
+RETRY_DUR = 60
 MAX_ATTEMPT = 3
 
 MODEL = "gemini-2.5-flash-lite"
@@ -46,6 +46,8 @@ def extract_tech_stack(batch_desc: list) -> list | None:
     """
 
     raw = prompt_model(MODEL, prompt)
+
+    # if raw contains RateLimitError, raise
 
     # detect error strings returned by prompt_model()
     if (
@@ -101,7 +103,7 @@ def process_in_batch(conn, cursor, res):
                     print(
                         f"[Batch {index}] Attempt {attempt} failed: Mismatch between batch size and response"
                     )
-                    time.sleep(RETRY_DUR)
+                    time.sleep(3)
                     continue  # retry attempt
 
                 # update DB table
@@ -114,7 +116,7 @@ def process_in_batch(conn, cursor, res):
                 print(
                     f"[Batch {index}] Attempt {attempt} failed: {type(e).__name__}: {e}"
                 )
-                time.sleep(RETRY_DUR)
+                time.sleep(3)
                 continue
 
 

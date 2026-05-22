@@ -1,3 +1,29 @@
-gemini-2.5-flash 1K 1M 10K
-gemini-2.5-flash-lite 4K 4M Unlim
-gemini-3-flash-preview 1K 2M 10K
+gemini-2.5-flash 5 250K 20
+gemini-2.5-flash-lite 10 250K 20
+gemini-3-flash-preview 5 250K 20
+
+
+Batch size calculation:
+e.g.
+model = gemini-2.5-flash-lite
+
+req per minute -> 10
+req per second -> 10/60 = 0.167
+1 req -> 1/0.167 = 6s (time for each api call)
+
+if req per day = 20,
+- batch_size = 1 -> 8 rows = 8 api calls
+- batch_size = 2 -> 8 rows = 4 api calls
+- batch_size = 4 -> 8 rows = 2 api calls
+
+min_batch_size = ceil(total_rows/rpd)
+               = ceil(100/20)
+               = 5
+    hence, must process at least 5 rows per api call to fit 100 rows within 20 daily requests
+
+in tag_data.py & find_skill_gaps.py, 
+if jobs.db (100 rows):
+take batch_size = 25, so that only 4 api calls made (fulfil max 5 calls per minute as well)
+
+if jobs_d1.db or jobs_d3_eval.db (8 rows):
+take batch_size = 4, so that only 2 api calls (more efficient)

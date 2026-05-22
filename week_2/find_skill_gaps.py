@@ -16,8 +16,8 @@ from aliases import ALIASES
 load_dotenv()
 API_KEY = os.getenv("GOOGLE_API_KEY")
 
-BATCH_SIZE = 4 # job_d1.db --> 4; jobs.db --> 20; jobs_d3_eval.db --> 4
-RETRY_DUR = 3
+BATCH_SIZE = 4 # job_d1.db --> 4; jobs.db --> 25; jobs_d3_eval.db --> 4
+RETRY_DUR = 60
 MAX_ATTEMPTS = 3
 
 MODEL = "gemini-2.5-flash-lite"
@@ -143,8 +143,8 @@ def extract_resume_skills(resume_text: str) -> set | None:
                 or raw.startswith("[Error]")
             ):
                 print(f"Attempt {attempt} failed: {raw}")
-                print(f"Retrying in {RETRY_DUR}s...")
-                time.sleep(RETRY_DUR)
+                print("Retrying in 1s...")
+                time.sleep(1)
                 continue
 
             match = re.search(r"\[.*\]", raw, re.DOTALL)
