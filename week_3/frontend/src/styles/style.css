@@ -1,0 +1,131 @@
+html, body {
+    height: 100%;
+    background-color: black;
+    color: white;
+}
+
+body {
+    font-family: 'Raleway', sans-serif;
+}
+
+.full-height {
+    height: 100%;
+}
+
+.text-gradient {
+    background: linear-gradient(180deg, #fff, #DEB8FF, #7934BA);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.text-purple {
+    color: #DEB8FF;
+}
+
+.btn-primary {
+    background-color: #7934BA;
+    border-color: #5d2790;
+}
+
+.btn-primary:hover {
+    background-color: #5d2790;
+    border-color: #7934BA;
+}
+
+.btn-primary:disabled {
+    background-color: rgb(100, 96, 101);
+    border-color: #8e8e8e;
+}
+
+::placeholder {
+    color: #fff !important;
+    opacity: 0.3 !important;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.text-tiny {
+    font-size: small;
+}
+
+.form-control {
+    resize: none;
+}
+
+.input-field {
+    border-radius: 0.5rem;
+    background-color: rgb(29, 29, 29);
+    display: flex;
+    align-items: start;
+    padding: 0.5rem;
+    border-color: rgb(29, 29, 29) !important;
+}
+
+.input-field textarea {
+    max-height: 150px;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.input-field textarea::-webkit-scrollbar {
+    display: none;
+}
+
+.input-field:hover {
+    border-width: 0.5rem;
+    border-color: rgb(255, 255, 255, 0.1) !important;
+}
+
+.input-field:focus-within {
+    border-color: rgb(255, 255, 255, 0.1) !important;
+}
+
+.border-secondary {
+    border-color: rgb(255, 255, 255, 0.2) !important;
+}
+
+.icon {
+    color: rgb(255, 255, 255, 0.5);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    border-color: rgb(255, 255, 255, 0.2) !important;
+}
+
+.icon:hover {
+    border-color: rgba(222, 182, 255, 0.35) !important;
+    border-width: 0.5rem;
+    color: rgba(222, 182, 255, 0.35) !important;
+}
+
+.scroll-ctn {
+    scrollbar-width: 0;
+}
+
+.scroll-ctn::-webkit-scrollbar {
+    display: none;
+}
+
+.loading-dots span {
+    animation: blink 1.4s infinite both;
+    font-size: 3rem;
+    color: #DEB8FF;
+}
+
+.loading-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.loading-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes blink {
+    0%, 80%, 100% { opacity: 0; }
+    40% { opacity: 1; }
+}
