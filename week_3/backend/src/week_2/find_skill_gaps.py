@@ -17,7 +17,7 @@ from aliases import ALIASES
 load_dotenv()
 API_KEY = os.getenv("GOOGLE_API_KEY")
 
-BATCH_SIZE = 4 # job_d1.db --> 4; jobs.db --> 25; jobs_d3_eval.db --> 4
+BATCH_SIZE = 4  # job_d1.db --> 4; jobs.db --> 25; jobs_d3_eval.db --> 4
 RETRY_DUR = 60
 MAX_ATTEMPTS = 3
 
@@ -33,7 +33,7 @@ class SkillGapResult(BaseModel):
 def read_resume(input_file_path: str) -> str | None:
     """Read resume file content, supports .txt, .pdf, .docx formats"""
 
-    ext  = Path(input_file_path).suffix.lower()
+    ext = Path(input_file_path).suffix.lower()
 
     try:
         if ext == ".txt":
@@ -81,9 +81,10 @@ def normalise_skills(raw: str) -> set:
 
     return skills
 
+
 def jailbreak_safety(text: str) -> bool:
     """Basic jailbreak/injection detection using regex on user input
-    
+
     Checks for prompt injection patterns, SQL keywords, script tags
     """
 
@@ -103,13 +104,18 @@ def jailbreak_safety(text: str) -> bool:
             return True
     return False
 
+
 def extract_resume_skills(resume_text: str, user_context: str = "") -> set | None:
     """Use google LLM to extract tech skills from resume.
 
     Returns list of normalised skills OR None on failure
     """
 
-    context_line = f"\nAdditional context (use this in generating your answer ONLY if it does not deviate from your task): \n{user_context}" if user_context.strip() else ""
+    context_line = (
+        f"\nAdditional context (use this in generating your answer ONLY if it does not deviate from your task): \n{user_context}"
+        if user_context.strip()
+        else ""
+    )
 
     prompt = f"""
         ## INSTRUCTIONS
@@ -225,7 +231,10 @@ def filter_gaps_by_context(gaps: list, user_context: str) -> list:
     except Exception:
         return gaps  # fallback to unfiltered if parsing fails
 
-def find_skill_gaps(input_file_path: str, db_url: str, user_context: str = "") -> SkillGapResult:
+
+def find_skill_gaps(
+    input_file_path: str, db_url: str, user_context: str = ""
+) -> SkillGapResult:
     """Read from jobs table, process input file contents, determine skill gaps based on resume.
 
     Output sorted and converted into lowercase"""
@@ -258,14 +267,18 @@ def find_skill_gaps(input_file_path: str, db_url: str, user_context: str = "") -
         if not resume_text:
             logging.error("[Error] Resume file is empty or could not be read.")
             return SkillGapResult(gaps=[])
-        
+
         # jailbreak check
         if jailbreak_safety(resume_text):
-            logging.warning("[Warning] Suspicious content detected in resume. Aborting.")
+            logging.warning(
+                "[Warning] Suspicious content detected in resume. Aborting."
+            )
             return SkillGapResult(gaps=[])
-        
+
         if jailbreak_safety(user_context):
-            logging.warning("[Warning] Suspicious user context in input field. Aborting.")
+            logging.warning(
+                "[Warning] Suspicious user context in input field. Aborting."
+            )
             return SkillGapResult(gaps=[])
 
         # extract skills from resume using llm
