@@ -152,9 +152,10 @@ The backend exposes a single endpoint that handles all chat interactions.
 ```
 
 #### 2. `GET /`
-The frontend exposes a single GET endpoint to render the HTML page
-- **Request body (JSON)**: FastAPI Request
-- **Response (JSON)**: Jinja2 templates serving `chat_page.html`
+The frontend exposes a GET endpoint that serves the chat page.
+
+- **Request**: No body — standard browser GET request
+- **Response**: HTML page rendered by Jinja2 from `chat_page.html`, with `BACKEND_URL` injected as a template variable
 
 
 ### Key Backend Functions
@@ -211,7 +212,7 @@ All communication between the frontend and backend uses JSON over HTTP. The requ
 | **PDF type** | PDFs must be text-based. Scanned or image-based PDFs will produce little to no extracted text since PDF.js cannot perform OCR |
 | **File size** | No strict file size limit is enforced, but very large files may cause slow text extraction in the browser or slow model processing on the backend |
 | **Message length** | No hard limit on message length, but very long inputs may exceed the model's context window and produce degraded responses |
-| **Single file** | Only one file can be attached per message. If multiple files are needed, they must be sent as separate messages |
+| **Multiple files** | Multiple files can be attached to the preview, but only the first file is processed and sent to the backend. Subsequent files are ignored. |
 | **Database populated** | The `tech_stack` column in the job database must already be populated before running the application. Skill gap analysis depends entirely on this data |
 | **Ollama running** | When using local models, Ollama must be running on the host machine before starting the containers. The backend will fail to generate responses if Ollama is unreachable |
 | **Stateless requests** | Each request is independent. The backend has no memory of previous messages, so context from earlier in a conversation is not carried forward |
