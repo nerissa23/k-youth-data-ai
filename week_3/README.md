@@ -290,8 +290,7 @@ To confirm both containers are running and communicating correctly:
 - **No persistent chat history:** Refreshing the browser resets all messages. Chat is not saved to any database.
 - **Basic jailbreak protection:** The resume text is checked for common injection patterns before processing, but sophisticated adversarial inputs may still bypass the checks.
 - **PDF text extraction quality:** PDF.js extracts text from text-based PDFs reliably, but scanned or image-based PDFs will return little to no text.
-- **Single file per message:** Only one resume file can be attached per message.
-- **No user authentication:** There is no login system — anyone with access to the URL can use the application.
+- **Single file per message:** Only one resume file can be processed per message.
 
 
 ## Architecture Reflection
